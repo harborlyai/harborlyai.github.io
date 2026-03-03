@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harborly AI — Find the gap. Close it.</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:    #0b1219;
+    --ink2:   #111c28;
+    --navy:   #1e3050;
+    --teal:   #4af0c8;
+    --blue:   #0ea5e9;
+    --muted:  #2a4a5a;
+    --text:   #e8e4df;
+    --dim:    #5a7a8a;
+    --border: #1a2e40;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ink);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── GRID BG ─────────────────────────────── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(74,240,200,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(74,240,200,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ─────────────────────────────────── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(11,18,25,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: 0.05em;
+    color: var(--text);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav-logo .ai-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    background: linear-gradient(90deg, var(--teal), var(--blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .nav-cta {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border: 1px solid var(--teal);
+    color: var(--teal);
+    text-decoration: none;
+    transition: all 0.2s;
+    background: transparent;
+  }
+
+  .nav-cta:hover {
+    background: var(--teal);
+    color: var(--ink);
+  }
+
+  /* ── SECTIONS ────────────────────────────── */
+  section { position: relative; z-index: 1; }
+
+  /* ── HERO ────────────────────────────────── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 24px 80px;
+    text-align: center;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s both;
+  }
+
+  .hero-icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 36px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.3s both;
+  }
+
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(48px, 8vw, 88px);
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s both;
+  }
+
+  .hero-title .grad {
+    background: linear-gradient(135deg, var(--teal) 0%, var(--blue) 60%, var(--text) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-tagline {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(14px, 2vw, 18px);
+    letter-spacing: 0.15em;
+    color: var(--dim);
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.5s both;
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--dim);
+    max-width: 560px;
+    margin: 0 auto 52px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.6s both;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.7s both;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    padding: 16px 36px;
+    background: linear-gradient(135deg, var(--teal), var(--blue));
+    color: var(--ink);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(74,240,200,0.25); }
+
+  .btn-secondary {
+    display: inline-block;
+    padding: 16px 36px;
+    border: 1px solid var(--border);
+    color: var(--dim);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover { border-color: var(--teal); color: var(--teal); }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1.2s both;
+  }
+
+  .scroll-hint span {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--teal), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  /* ── PROBLEM ─────────────────────────────── */
+  #problem {
+    padding: 100px 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(32px, 5vw, 52px);
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 32px;
+  }
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin: 60px 0;
+  }
+
+  .stat-card {
+    background: var(--ink2);
+    border: 1px solid var(--border);
+    padding: 36px 28px;
+    text-align: center;
+    transition: border-color 0.2s;
+  }
+
+  .stat-card:hover { border-color: var(--teal); }
+
+  .stat-number {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 48px;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--teal), var(--blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    color: var(--dim);
+    line-height: 1.5;
+  }
+
+  /* ── WHAT WE DO ──────────────────────────── */
+  #what {
+    padding: 100px 24px;
+    background: var(--ink2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .what-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .process-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-top: 60px;
+  }
+
+  .process-step {
+    background: var(--ink);
+    border: 1px solid var(--border);
+    padding: 36px 28px;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+
+  .process-step:hover { border-color: var(--teal); }
+
+  .step-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--teal);
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .step-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .step-desc {
+    font-size: 13px;
+    color: var(--dim);
+    line-height: 1.65;
+  }
+
+  .step-arrow {
+    position: absolute;
+    top: 50%;
+    right: -14px;
+    transform: translateY(-50%);
+    width: 26px;
+    height: 26px;
+    background: var(--ink2);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    font-size: 10px;
+    color: var(--teal);
+  }
+
+  /* ── WHO ─────────────────────────────────── */
+  #who {
+    padding: 100px 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .who-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 48px;
+  }
+
+  .who-card {
+    background: var(--ink2);
+    border: 1px solid var(--border);
+    padding: 36px 32px;
+  }
+
+  .who-card.featured {
+    border-color: var(--teal);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .who-card.featured::before {
+    content: 'CURRENT CAMPAIGN';
+    position: absolute;
+    top: 16px;
+    right: -22px;
+    background: linear-gradient(90deg, var(--teal), var(--blue));
+    color: var(--ink);
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    padding: 4px 36px;
+    transform: rotate(45deg);
+    font-weight: 500;
+  }
+
+  .who-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .who-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .who-desc {
+    font-size: 14px;
+    color: var(--dim);
+    line-height: 1.65;
+    margin-bottom: 20px;
+  }
+
+  .who-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--dim);
+    margin: 3px 3px 0 0;
+  }
+
+  .who-card.featured .who-tag {
+    border-color: rgba(74,240,200,0.3);
+    color: var(--teal);
+  }
+
+  /* ── OFFER ───────────────────────────────── */
+  #offer {
+    padding: 100px 24px;
+    background: var(--ink2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .offer-inner { max-width: 900px; margin: 0 auto; }
+
+  .offer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 52px;
+  }
+
+  .offer-card {
+    background: var(--ink);
+    border: 1px solid var(--border);
+    padding: 40px 28px;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s;
+  }
+
+  .offer-card:hover { border-color: var(--teal); }
+
+  .offer-card.highlight {
+    border-color: var(--teal);
+    background: linear-gradient(160deg, #0d1f28 0%, var(--ink) 100%);
+  }
+
+  .offer-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 16px;
+  }
+
+  .offer-price {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 36px;
+    color: var(--text);
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+
+  .offer-price .free { color: var(--teal); }
+
+  .offer-note {
+    font-size: 12px;
+    color: var(--dim);
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+
+  .offer-divider {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+    margin-bottom: 24px;
+  }
+
+  .offer-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: var(--dim);
+    line-height: 1.5;
+  }
+
+  .offer-feature .check {
+    color: var(--teal);
+    font-size: 12px;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .offer-cta {
+    margin-top: auto;
+    padding-top: 28px;
+  }
+
+  /* ── WAITLIST ────────────────────────────── */
+  #waitlist {
+    padding: 100px 24px;
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .waitlist-box {
+    background: var(--ink2);
+    border: 1px solid var(--border);
+    padding: 64px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .waitlist-box::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(74,240,200,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .waitlist-box::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(14,165,233,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .waitlist-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 32px;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .waitlist-sub {
+    font-size: 15px;
+    color: var(--dim);
+    line-height: 1.7;
+    margin-bottom: 36px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── FOOTER ──────────────────────────────── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    color: var(--text);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  .footer-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--teal); }
+
+  .footer-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+  }
+
+  /* ── DIVIDER LINE ────────────────────────── */
+  .teal-line {
+    width: 40px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--teal), var(--blue));
+    margin-bottom: 24px;
+  }
+
+  /* ── ANIMATIONS ──────────────────────────── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── MOBILE ──────────────────────────────── */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .stat-row { grid-template-columns: 1fr; }
+    .process-grid { grid-template-columns: 1fr 1fr; }
+    .step-arrow { display: none; }
+    .who-grid { grid-template-columns: 1fr; }
+    .offer-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 20px; text-align: center; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+    .waitlist-box { padding: 40px 24px; }
+  }
+
+  @media (max-width: 480px) {
+    .process-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">
+    HARBORLY <span class="ai-badge">AI</span>
+  </a>
+  <a href="#offer" class="nav-cta">Apply Now</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <span class="hero-eyebrow">AI Audits for Professional Services</span>
+
+  <!-- Icon -->
+  <svg class="hero-icon" viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="tg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#4af0c8"/>
+        <stop offset="100%" stop-color="#0ea5e9"/>
+      </linearGradient>
+      <linearGradient id="tg2" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#0ea5e9"/>
+        <stop offset="100%" stop-color="#4af0c8"/>
+      </linearGradient>
+      <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#4af0c8" stop-opacity="0.1"/>
+        <stop offset="100%" stop-color="#4af0c8" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <rect width="280" height="280" rx="64" fill="#0d1520"/>
+    <circle cx="140" cy="140" r="100" fill="url(#glow)"/>
+    <line x1="140" y1="40" x2="140" y2="240" stroke="#1a2e44" stroke-width="1.2"/>
+    <line x1="40" y1="140" x2="240" y2="140" stroke="#1a2e44" stroke-width="1.2"/>
+    <line x1="69" y1="69" x2="211" y2="211" stroke="#111e2e" stroke-width="0.8"/>
+    <line x1="211" y1="69" x2="69" y2="211" stroke="#111e2e" stroke-width="0.8"/>
+    <path d="M 40 140 a 100 100 0 0 1 200 0" fill="none" stroke="#1a3050" stroke-width="1.5"/>
+    <path d="M 68 140 a 72 72 0 0 1 144 0" fill="none" stroke="#1a3050" stroke-width="1.5"/>
+    <path d="M 96 140 a 44 44 0 0 1 88 0" fill="none" stroke="#1a3050" stroke-width="1.5"/>
+    <path d="M 116 140 a 24 24 0 0 1 48 0" fill="none" stroke="#1a3050" stroke-width="1.5"/>
+    <path d="M 40 140 a 100 100 0 0 1 200 0" fill="none" stroke="url(#tg)" stroke-width="2.5" stroke-dasharray="220 400" stroke-dashoffset="-60" opacity="0.9"/>
+    <path d="M 52 140 a 88 88 0 0 1 176 0" fill="none" stroke="url(#tg2)" stroke-width="3" opacity="0.85"/>
+    <rect x="36" y="36" width="12" height="2" fill="#4af0c8" opacity="0.6"/>
+    <rect x="36" y="36" width="2" height="12" fill="#4af0c8" opacity="0.6"/>
+    <rect x="232" y="36" width="12" height="2" fill="#4af0c8" opacity="0.6"/>
+    <rect x="242" y="36" width="2" height="12" fill="#4af0c8" opacity="0.6"/>
+    <circle cx="240" cy="140" r="6" fill="#4af0c8"/>
+    <circle cx="40" cy="140" r="6" fill="#4af0c8"/>
+    <circle cx="212" cy="140" r="4" fill="#0ea5e9" opacity="0.8"/>
+    <circle cx="68" cy="140" r="4" fill="#0ea5e9" opacity="0.8"/>
+    <circle cx="140" cy="140" r="5" fill="url(#tg)"/>
+  </svg>
+
+  <h1 class="hero-title">
+    HARBORLY<br><span class="grad">AI</span>
+  </h1>
+  <p class="hero-tagline">Find the gap. Close it.</p>
+
+  <p class="hero-sub">
+    We audit how your business uses AI — and show you exactly where you're leaving time and money on the table. No generic advice. A real roadmap.
+  </p>
+
+  <div class="hero-actions">
+    <a href="#offer" class="btn-primary">Apply for an Audit</a>
+    <a href="#what" class="btn-secondary">How It Works</a>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="reveal">
+    <span class="section-label">The Problem</span>
+    <h2 class="section-title">Most businesses are using AI backwards.</h2>
+    <div class="teal-line"></div>
+    <p style="color: var(--dim); font-size: 16px; line-height: 1.8; max-width: 680px;">
+      They buy the tool first, then try to find a use for it. The result: wasted subscriptions, frustrated teams, and zero ROI. The right approach is to find the gap first — then find the tool that closes it. That's what we do.
+    </p>
+  </div>
+
+  <div class="stat-row reveal">
+    <div class="stat-card">
+      <div class="stat-number">74%</div>
+      <div class="stat-label">of companies struggle to scale value from AI. Only 1 in 4 projects hits expected ROI. <span style="font-size:11px;opacity:0.6">— BCG</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">53%</div>
+      <div class="stat-label">of law firms have no AI policy or are unaware of one. <span style="font-size:11px;opacity:0.6">— Clio Legal Trends Report 2025</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">4hrs+</div>
+      <div class="stat-label">saved per week by employees using AI daily. Most businesses haven't got there yet. <span style="font-size:11px;opacity:0.6">— St. Louis Fed</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT WE DO -->
+<section id="what">
+  <div class="what-inner">
+    <div class="reveal">
+      <span class="section-label">The Process</span>
+      <h2 class="section-title">Four steps. One clear roadmap.</h2>
+      <div class="teal-line"></div>
+      <p style="color: var(--dim); font-size: 16px; line-height: 1.8; max-width: 600px;">
+        We don't come in with a list of tools to sell you. We come in with a process that surfaces the real gaps in your operation — and matches the right solution to each one.
+      </p>
+    </div>
+
+    <div class="process-grid reveal">
+      <div class="process-step">
+        <span class="step-num">01</span>
+        <div class="step-title">Discovery Call</div>
+        <p class="step-desc">15 minutes. We learn about your business, your workflows, and your biggest operational headaches.</p>
+        <div class="step-arrow">→</div>
+      </div>
+      <div class="process-step">
+        <span class="step-num">02</span>
+        <div class="step-title">Deep Audit</div>
+        <p class="step-desc">60-minute structured audit call. We map every workflow, quantify the time cost, and identify your AI gaps.</p>
+        <div class="step-arrow">→</div>
+      </div>
+      <div class="process-step">
+        <span class="step-num">03</span>
+        <div class="step-title">Opportunities Report</div>
+        <p class="step-desc">A detailed report: diagnosis, 3–5 specific AI recommendations, ROI projections, and a 90-day roadmap.</p>
+        <div class="step-arrow">→</div>
+      </div>
+      <div class="process-step">
+        <span class="step-num">04</span>
+        <div class="step-title">Live Presentation</div>
+        <p class="step-desc">We present the findings live — not via email. You ask questions. You leave with a plan, not a document.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO -->
+<section id="who">
+  <div class="reveal">
+    <span class="section-label">Who We Work With</span>
+    <h2 class="section-title">We run focused campaigns by industry.</h2>
+    <div class="teal-line"></div>
+    <p style="color: var(--dim); font-size: 16px; line-height: 1.8; max-width: 640px;">
+      Rather than working with every type of business at once, we open focused campaigns for specific industries. This means our research is deeper and our recommendations are sharper.
+    </p>
+  </div>
+
+  <div class="who-grid reveal">
+    <div class="who-card featured">
+      <span class="who-icon">⚖️</span>
+      <div class="who-title">Law Firms</div>
+      <p class="who-desc">Small-to-mid firms (3–50 attorneys) losing billable hours to manual admin, disconnected tools, and no AI strategy. We audit safely — no client data is ever touched.</p>
+      <span class="who-tag">Billing Efficiency</span>
+      <span class="who-tag">Document Drafting</span>
+      <span class="who-tag">AI Policy</span>
+      <span class="who-tag">Tool Integration</span>
+    </div>
+    <div class="who-card">
+      <span class="who-icon">📋</span>
+      <div class="who-title">Other Industries</div>
+      <p class="who-desc">Marketing agencies, real estate firms, accounting practices, and professional services businesses. Join the waitlist — your campaign is coming.</p>
+      <span class="who-tag">Marketing Agencies</span>
+      <span class="who-tag">Real Estate</span>
+      <span class="who-tag">Accounting</span>
+      <span class="who-tag">Coming Soon</span>
+    </div>
+  </div>
+</section>
+
+<!-- OFFER -->
+<section id="offer">
+  <div class="offer-inner">
+    <div class="reveal">
+      <span class="section-label">Current Campaign — The Legal Gap Audit</span>
+      <h2 class="section-title">4 spots available for law firms.</h2>
+      <div class="teal-line"></div>
+      <p style="color: var(--dim); font-size: 16px; line-height: 1.8; max-width: 660px;">
+        We are currently accepting applications from small law firms. We're building our portfolio — so two spots are completely free in exchange for a testimonial. Two paid spots are also available. All four are first come, first served.
+      </p>
+    </div>
+
+    <!-- FREE SPOTS -->
+    <div style="margin-top:48px;" class="reveal">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+        <span style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.4em;text-transform:uppercase;color:var(--teal);white-space:nowrap;">Portfolio Spots — Free</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.15em;color:var(--dim);white-space:nowrap;">2 spots · in exchange for a testimonial</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;">
+
+        <div class="offer-card" style="border-color:#1a3a50;position:relative;">
+          <div style="position:absolute;top:16px;right:16px;background:rgba(74,240,200,0.08);border:1px solid rgba(74,240,200,0.25);padding:3px 10px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.2em;color:var(--teal);">1 SPOT</div>
+          <div class="offer-name">Gap Scan</div>
+          <div class="offer-price" style="background:linear-gradient(135deg,#4af0c8,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">FREE</div>
+          <div class="offer-note">Portfolio spot — testimonial required</div>
+          <div class="offer-divider"></div>
+          <div class="offer-feature"><span class="check">✦</span><span>15-min discovery call</span></div>
+          <div class="offer-feature"><span class="check">✦</span><span>60-min audit call</span></div>
+          <div class="offer-feature"><span class="check">✦</span><span>Report identifying top 3 AI gaps</span></div>
+          <div class="offer-feature"><span class="check">✦</span><span>Tool recommendations for each gap</span></div>
+          <div class="offer-feature"><span class="check">✦</span><span>7 days email support</span></div>
+          <div class="offer-feature" style="opacity:0.45;margin-top:8px;"><span class="check" style="color:var(--dim);">○</span><span style="color:var(--dim);">In return: 30-second video testimonial</span></div>
+          <div class="offer-cta">
+            <a href="https://forms.gle/uZWpmGGDJDUjr7Q96" target="_blank" class="btn-secondary" style="display:block;text-align:center;">Apply for Free Spot →</a>
+          </div>
+        </div>
+
+        <div class="offer-card highlight" style="position:relative;">
+          <div style="position:absolute;top:16px;right:16px;background:rgba(74,240,200,0.08);border:1px solid rgba(74,240,200,0.25);padding:3px 10px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.2em;color:var(--teal);">1 SPOT</div>
+          <div class="offer-name">Full Legal Audit</div>
+          <div class="offer-price" style="background:linear-gradient(135deg,#4af0c8,#0ea5e9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">FREE</div>
+          <div class="offer-note">Portfolio spot — testimonial required</div>
+          <div class="offer-divider"></div>
+          <div class="offer-feature"><span class="check">✦</span><span>15-min discovery call</span></div>
+          <div class="offer-feature"><span class="check">✦</span><span>Full 60-min structured audit call</span></div>
+          <div class="offer-feature"><span class="check">✦</span><span>Comprehensive report (8–15 pages)</span></div>
+          <div class="offer-feature"><span class="check">✦</span><span>5 AI recommendations with ROI projections</span></div>
+          <div class="offer-feature"><span class="check">✦</span><span>90-day implementation roadmap</span></div>
+          <div class="offer-feature"><span class="check">✦</span><span>Live presentation call</span></div>
+          <div class="offer-feature"><span class="check">✦</span><span>14 days follow-up support</span></div>
+          <div class="offer-feature" style="opacity:0.45;margin-top:8px;"><span class="check" style="color:var(--dim);">○</span><span style="color:var(--dim);">In return: 30-second video testimonial</span></div>
+          <div class="offer-cta">
+            <a href="https://forms.gle/uZWpmGGDJDUjr7Q96" target="_blank" class="btn-primary" style="display:block;text-align:center;">Apply for Free Spot →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAID SPOTS -->
+    <div style="margin-top:28px;" class="reveal">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+        <span style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.4em;text-transform:uppercase;color:var(--dim);white-space:nowrap;">Paid Spots</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.15em;color:var(--dim);white-space:nowrap;">2 spots · full service</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;">
+
+        <div class="offer-card">
+          <div class="offer-name">Gap Scan</div>
+          <div class="offer-price">$500</div>
+          <div class="offer-note">Entry-level audit</div>
+          <div class="offer-divider"></div>
+          <div class="offer-feature"><span class="check">✦</span><span>15-min discovery call</span></div>
+          <div class="offer-feature"><span class="check">✦</span><span>60-min audit call</span></div>
+          <div class="offer-feature"><span class="check">✦</span><span>Report identifying top 3 AI gaps</span></div>
+          <div class="offer-feature"><span class="check">✦</span><span>Tool recommendations for each gap</span></div>
+          <div class="offer-feature"><span class="check">✦</span><span>7 days email support</span></div>
+          <div class="offer-cta">
+            <a href="https://forms.gle/uZWpmGGDJDUjr7Q96" target="_blank" class="btn-secondary" style="display:block;text-align:center;">Apply →</a>
+          </div>
+        </div>
+
+        <div class="offer-card">
+          <div class="offer-name">Full Legal Audit</div>
+          <div class="offer-price">$2,000</div>
+          <div class="offer-note">Full roadmap — most comprehensive</div>
+          <div class="offer-divider"></div>
+          <div class="offer-feature"><span class="check">✦</span><span>15-min discovery call</span></div>
+          <div class="offer-feature"><span class="check">✦</span><span>Full 60-min structured audit call</span></div>
+          <div class="offer-feature"><span class="check">✦</span><span>Comprehensive report (8–15 pages)</span></div>
+          <div class="offer-feature"><span class="check">✦</span><span>5 AI recommendations with ROI projections</span></div>
+          <div class="offer-feature"><span class="check">✦</span><span>90-day implementation roadmap</span></div>
+          <div class="offer-feature"><span class="check">✦</span><span>Live presentation call</span></div>
+          <div class="offer-feature"><span class="check">✦</span><span>14 days follow-up support</span></div>
+          <div class="offer-cta">
+            <a href="https://forms.gle/uZWpmGGDJDUjr7Q96" target="_blank" class="btn-secondary" style="display:block;text-align:center;">Apply →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- WAITLIST -->
+<section id="waitlist">
+  <div class="waitlist-box reveal">
+    <span class="section-label" style="display:block;margin-bottom:16px;">Not a Law Firm?</span>
+    <h2 class="waitlist-title">Join the waitlist.<br>Your campaign is coming.</h2>
+    <p class="waitlist-sub">
+      We run focused campaigns for one industry at a time. If you're not a law firm, fill out the waitlist form and we'll reach out when we open your industry's campaign.
+    </p>
+    <a href="https://forms.gle/uZWpmGGDJDUjr7Q96" target="_blank" class="btn-primary">Join the Waitlist →</a>
+    <p style="margin-top:20px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:0.15em; color:var(--muted);">
+      No spam. No pitch. Just a heads up when your campaign opens.
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">HARBORLY AI</div>
+  <ul class="footer-links">
+    <li><a href="#what">Process</a></li>
+    <li><a href="#who">Who We Help</a></li>
+    <li><a href="#offer">Apply</a></li>
+    <li><a href="https://instagram.com/harborlyai" target="_blank">Instagram</a></li>
+  </ul>
+  <span class="footer-tag">Find the gap. Close it.</span>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
