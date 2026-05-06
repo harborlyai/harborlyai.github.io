@@ -1,391 +1,824 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Harborly AI — AI Automation Systems for Real Estate Agencies</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --ink:#080e14;--ink2:#0d1720;--navy:#1a2d45;--teal:#4af0c8;--teal2:#2dd4aa;
-    --blue:#0ea5e9;--muted:#1e3a52;--text:#e8e4df;--dim:#5a7a8a;--dim2:#3a5a6a;
-    --border:#1a2e40;--white:#ffffff;--red:#ff4d4d;
-  }
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-  html{scroll-behavior:smooth;}
-  body{background:var(--ink);color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden;}
-  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(74,240,200,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(74,240,200,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Harborly AI — AI Automation Systems for Real Estate Agencies</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* NAV */
-  nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 40px;background:rgba(8,14,20,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(74,240,200,0.08);}
-  .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--white);letter-spacing:0.05em;text-decoration:none;}
-  .nav-logo span{color:var(--teal);}
-  .nav-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.2em;color:var(--dim);text-transform:uppercase;}
-  .nav-cta{background:var(--teal);color:var(--ink);font-family:'DM Mono',monospace;font-size:11px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;padding:10px 20px;text-decoration:none;transition:all 0.2s;}
-  .nav-cta:hover{background:var(--teal2);transform:translateY(-1px);}
+    :root {
+      --ink: #0f0f0f;
+      --ink-soft: #3a3a3a;
+      --ink-muted: #888;
+      --paper: #faf8f5;
+      --paper-2: #f2ede6;
+      --accent: #c8602a;
+      --accent-light: #e8845a;
+      --accent-pale: #f5e6dc;
+      --border: rgba(15,15,15,0.1);
+      --border-strong: rgba(15,15,15,0.2);
+    }
 
-  /* HERO */
-  #hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px 40px 80px;max-width:1200px;margin:0 auto;z-index:1;}
-  .hero-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.4em;text-transform:uppercase;color:var(--teal);margin-bottom:24px;display:flex;align-items:center;gap:12px;}
-  .hero-label::before{content:'';display:block;width:40px;height:1px;background:var(--teal);}
-  .hero-headline{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(38px,6vw,76px);line-height:1.05;color:var(--white);margin-bottom:12px;}
-  .hero-headline .teal{color:var(--teal);}
-  .hero-sub{font-size:clamp(15px,2vw,19px);color:var(--dim);max-width:600px;line-height:1.8;margin-bottom:48px;margin-top:16px;}
-  .hero-buttons{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:80px;}
-  .btn-primary{background:var(--teal);color:var(--ink);font-family:'DM Mono',monospace;font-size:12px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;padding:16px 32px;text-decoration:none;transition:all 0.2s;display:inline-block;}
-  .btn-primary:hover{background:var(--teal2);transform:translateY(-2px);}
-  .btn-secondary{background:transparent;color:var(--teal);font-family:'DM Mono',monospace;font-size:12px;font-weight:500;letter-spacing:0.15em;text-transform:uppercase;padding:16px 32px;text-decoration:none;border:1px solid rgba(74,240,200,0.3);transition:all 0.2s;display:inline-block;}
-  .btn-secondary:hover{border-color:var(--teal);background:rgba(74,240,200,0.05);}
-  .hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;max-width:700px;}
-  .hero-stat{background:var(--ink2);border:1px solid var(--border);padding:24px;position:relative;overflow:hidden;}
-  .hero-stat::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--teal);}
-  .stat-n{font-family:'Syne',sans-serif;font-weight:800;font-size:30px;color:var(--teal);line-height:1;margin-bottom:6px;}
-  .stat-l{font-size:12px;color:var(--dim);line-height:1.4;}
+    html { scroll-behavior: smooth; }
 
-  /* SHARED */
-  .section-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.4em;text-transform:uppercase;color:var(--teal);margin-bottom:20px;display:block;}
-  .section-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(26px,4vw,44px);line-height:1.1;color:var(--white);margin-bottom:20px;}
-  .teal-line{width:48px;height:3px;background:var(--teal);margin-bottom:24px;}
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
 
-  /* PROBLEM */
-  #problem{position:relative;z-index:1;background:var(--ink2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:100px 40px;}
-  .problem-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
-  .problem-text{color:var(--dim);font-size:15px;line-height:1.8;margin-bottom:16px;}
-  .problem-cards{display:flex;flex-direction:column;gap:12px;}
-  .problem-card{background:var(--ink);border:1px solid var(--border);border-left:3px solid var(--red);padding:20px 24px;display:flex;align-items:flex-start;gap:16px;}
-  .problem-icon{font-size:20px;flex-shrink:0;margin-top:2px;}
-  .problem-card-title{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--white);margin-bottom:4px;}
-  .problem-card-desc{font-size:13px;color:var(--dim);line-height:1.5;}
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      background: rgba(250,248,245,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
 
-  /* SOLUTION */
-  #solution{position:relative;z-index:1;padding:100px 40px;max-width:1200px;margin:0 auto;}
-  .solution-header{text-align:center;margin-bottom:64px;}
-  .solution-header .section-label{display:block;text-align:center;}
-  .solution-header .teal-line{margin:0 auto 24px;}
-  .capabilities-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;}
-  .cap-card{background:var(--ink2);border:1px solid var(--border);padding:32px;position:relative;overflow:hidden;transition:all 0.3s;}
-  .cap-card:hover{border-color:rgba(74,240,200,0.3);transform:translateY(-4px);}
-  .cap-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--teal),transparent);opacity:0;transition:opacity 0.3s;}
-  .cap-card:hover::after{opacity:1;}
-  .cap-number{font-family:'DM Mono',monospace;font-size:11px;color:var(--teal);letter-spacing:0.2em;margin-bottom:16px;}
-  .cap-title{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--white);margin-bottom:10px;line-height:1.3;}
-  .cap-desc{font-size:13px;color:var(--dim);line-height:1.6;}
+    .nav-logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.15rem;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      text-decoration: none;
+    }
 
-  /* PROCESS */
-  #process{position:relative;z-index:1;background:var(--ink2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:100px 40px;}
-  .process-inner{max-width:1200px;margin:0 auto;}
-  .process-header{text-align:center;margin-bottom:64px;}
-  .process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;position:relative;}
-  .process-step{background:var(--ink);border:1px solid var(--border);padding:36px 28px;position:relative;}
-  .step-num{font-family:'Syne',sans-serif;font-weight:800;font-size:48px;color:rgba(74,240,200,0.15);line-height:1;margin-bottom:16px;}
-  .step-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--white);margin-bottom:10px;}
-  .step-desc{font-size:13px;color:var(--dim);line-height:1.6;}
-  .step-arrow{position:absolute;right:-14px;top:50%;transform:translateY(-50%);color:var(--teal);font-size:18px;z-index:2;}
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
 
-  /* PROOF */
-  #proof{position:relative;z-index:1;padding:100px 40px;max-width:1200px;margin:0 auto;}
-  .proof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:48px;}
-  .proof-card{background:var(--ink2);border:1px solid var(--border);padding:36px;}
-  .proof-stat{font-family:'Syne',sans-serif;font-weight:800;font-size:42px;color:var(--teal);line-height:1;margin-bottom:8px;}
-  .proof-label{font-size:14px;color:var(--white);font-weight:500;margin-bottom:8px;}
-  .proof-desc{font-size:12px;color:var(--dim);line-height:1.5;}
+    .nav-links a {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
 
-  /* WHY NOW */
-  #why-now{position:relative;z-index:1;background:var(--ink2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:100px 40px;}
-  .why-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
-  .mandate-box{background:var(--ink);border:1px solid rgba(74,240,200,0.2);padding:40px;position:relative;}
-  .mandate-box::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--teal),var(--blue));}
-  .mandate-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.3em;color:var(--teal);text-transform:uppercase;margin-bottom:16px;}
-  .mandate-headline{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--white);margin-bottom:16px;line-height:1.3;}
-  .mandate-text{font-size:14px;color:var(--dim);line-height:1.7;margin-bottom:24px;}
-  .mandate-points{display:flex;flex-direction:column;gap:10px;}
-  .mandate-point{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--text);}
-  .mandate-point::before{content:'→';color:var(--teal);flex-shrink:0;margin-top:1px;}
+    .nav-links a:hover { color: var(--accent); }
 
-  /* WHO */
-  #who{position:relative;z-index:1;padding:100px 40px;max-width:1200px;margin:0 auto;}
-  .who-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:48px;}
-  .who-card{background:var(--ink2);border:1px solid var(--border);padding:40px;transition:all 0.3s;}
-  .who-card:hover{border-color:rgba(74,240,200,0.25);}
-  .who-icon{font-size:32px;margin-bottom:20px;display:block;}
-  .who-title{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;color:var(--white);margin-bottom:12px;}
-  .who-desc{font-size:14px;color:var(--dim);line-height:1.7;margin-bottom:20px;}
-  .who-tags{display:flex;flex-wrap:wrap;gap:8px;}
-  .who-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.1em;color:var(--teal);background:rgba(74,240,200,0.08);border:1px solid rgba(74,240,200,0.15);padding:4px 10px;}
+    .nav-cta {
+      background: var(--ink);
+      color: var(--paper) !important;
+      padding: 10px 22px;
+      border-radius: 4px;
+      font-size: 0.82rem !important;
+      font-weight: 600 !important;
+      letter-spacing: 0.03em;
+      transition: background 0.2s !important;
+    }
+    .nav-cta:hover { background: var(--accent) !important; color: #fff !important; }
 
-  /* CTA */
-  #cta{position:relative;z-index:1;padding:100px 40px;background:var(--ink2);border-top:1px solid var(--border);}
-  .cta-inner{max-width:800px;margin:0 auto;text-align:center;}
-  .cta-headline{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(30px,5vw,54px);color:var(--white);line-height:1.1;margin-bottom:20px;}
-  .cta-headline span{color:var(--teal);}
-  .cta-sub{font-size:16px;color:var(--dim);line-height:1.7;margin-bottom:40px;max-width:540px;margin-left:auto;margin-right:auto;}
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 140px 48px 80px;
+      position: relative;
+      overflow: hidden;
+    }
 
-  /* FOOTER */
-  footer{position:relative;z-index:1;background:var(--ink);border-top:1px solid var(--border);padding:40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;}
-  .footer-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:var(--white);letter-spacing:0.05em;}
-  .footer-logo span{color:var(--teal);}
-  .footer-links{display:flex;gap:32px;list-style:none;}
-  .footer-links a{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.15em;color:var(--dim);text-decoration:none;text-transform:uppercase;transition:color 0.2s;}
-  .footer-links a:hover{color:var(--teal);}
-  .footer-tag{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.2em;color:var(--dim2);text-transform:uppercase;}
+    .hero-bg-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(80px, 18vw, 220px);
+      color: rgba(15,15,15,0.03);
+      white-space: nowrap;
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -0.02em;
+    }
 
-  /* REVEAL */
-  .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease;}
-  .reveal.visible{opacity:1;transform:translateY(0);}
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.1s forwards;
+    }
 
-  /* RESPONSIVE */
-  @media(max-width:768px){
-    nav{padding:16px 20px;}
-    .nav-tag{display:none;}
-    #hero{padding:100px 20px 60px;}
-    .hero-stats{grid-template-columns:1fr;max-width:100%;}
-    .problem-inner,.why-inner{grid-template-columns:1fr;gap:40px;}
-    .capabilities-grid,.process-steps,.proof-grid,.who-grid{grid-template-columns:1fr;}
-    .step-arrow{display:none;}
-    #problem,#solution,#process,#proof,#why-now,#who,#cta{padding:60px 20px;}
-    footer{padding:30px 20px;flex-direction:column;align-items:flex-start;}
-  }
-</style>
+    .hero-label::before {
+      content: '';
+      display: block;
+      width: 28px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.8rem, 6vw, 5.2rem);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      max-width: 820px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--ink-soft);
+      max-width: 540px;
+      margin-top: 28px;
+      font-weight: 300;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.35s forwards;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 44px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.5s forwards;
+    }
+
+    .btn-primary {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 16px 32px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: background 0.2s, transform 0.15s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--accent); transform: translateY(-1px); }
+
+    .btn-ghost {
+      color: var(--ink);
+      padding: 16px 32px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      border: 1px solid var(--border-strong);
+      transition: border-color 0.2s, color 0.2s;
+      display: inline-block;
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    .hero-stats {
+      display: flex;
+      gap: 64px;
+      margin-top: 80px;
+      padding-top: 48px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.65s forwards;
+    }
+
+    .stat-item {}
+    .stat-num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.6rem;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--ink-muted);
+      margin-top: 6px;
+      max-width: 180px;
+      line-height: 1.4;
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 100px 48px;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      max-width: 720px;
+    }
+
+    h2 em { font-style: italic; color: var(--accent); }
+
+    /* PROBLEM */
+    #problem {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    #problem .section-label { color: var(--accent-light); }
+    #problem .section-label::before { background: var(--accent-light); }
+
+    #problem h2 { color: var(--paper); }
+
+    .problem-body {
+      font-size: 1.05rem;
+      color: rgba(250,248,245,0.7);
+      max-width: 620px;
+      margin-top: 24px;
+      line-height: 1.75;
+      font-weight: 300;
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1px;
+      margin-top: 64px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .problem-card {
+      background: var(--ink);
+      padding: 40px 36px;
+      transition: background 0.2s;
+    }
+    .problem-card:hover { background: #1a1a1a; }
+
+    .problem-icon {
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+    }
+
+    .problem-card h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.15rem;
+      color: var(--paper);
+      margin-bottom: 12px;
+    }
+
+    .problem-card p {
+      font-size: 0.88rem;
+      color: rgba(250,248,245,0.55);
+      line-height: 1.65;
+    }
+
+    /* SOLUTION */
+    #solution {
+      background: var(--paper-2);
+    }
+
+    .solution-intro {
+      font-size: 1rem;
+      color: var(--ink-soft);
+      max-width: 560px;
+      margin-top: 20px;
+      font-weight: 300;
+    }
+
+    .solution-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 60px;
+    }
+
+    .solution-card {
+      background: var(--paper);
+      padding: 36px 32px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      position: relative;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .solution-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+    .solution-num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin-bottom: 20px;
+    }
+
+    .solution-card h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.18rem;
+      margin-bottom: 14px;
+      line-height: 1.25;
+    }
+
+    .solution-card p {
+      font-size: 0.88rem;
+      color: var(--ink-soft);
+      line-height: 1.65;
+    }
+
+    /* PROCESS */
+    #process {
+      background: var(--paper);
+    }
+
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      margin-top: 64px;
+      position: relative;
+    }
+
+    .process-steps::before {
+      content: '';
+      position: absolute;
+      top: 32px;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: var(--border-strong);
+      z-index: 0;
+    }
+
+    .step {
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-num {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--paper);
+      border: 1px solid var(--border-strong);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.2rem;
+      margin-bottom: 28px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .step:hover .step-num {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .step h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.05rem;
+      margin-bottom: 10px;
+    }
+
+    .step p {
+      font-size: 0.86rem;
+      color: var(--ink-soft);
+      line-height: 1.65;
+    }
+
+    /* STATS */
+    #stats {
+      background: var(--accent-pale);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      margin-top: 64px;
+      background: var(--border-strong);
+    }
+
+    .stats-card {
+      background: var(--accent-pale);
+      padding: 48px 40px;
+    }
+
+    .stats-card .stat-num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 3rem;
+      color: var(--accent);
+    }
+
+    .stats-card .stat-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin: 14px 0 10px;
+      color: var(--ink);
+    }
+
+    .stats-card p {
+      font-size: 0.84rem;
+      color: var(--ink-soft);
+      line-height: 1.65;
+    }
+
+    /* WHO */
+    #who {
+      background: var(--paper-2);
+    }
+
+    .who-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 60px;
+    }
+
+    .who-card {
+      background: var(--paper);
+      padding: 40px 36px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+    }
+
+    .who-icon { font-size: 2rem; margin-bottom: 20px; }
+
+    .who-card h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.2rem;
+      margin-bottom: 14px;
+    }
+
+    .who-card p {
+      font-size: 0.88rem;
+      color: var(--ink-soft);
+      line-height: 1.65;
+      margin-bottom: 20px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 5px 12px;
+      background: var(--accent-pale);
+      color: var(--accent);
+      border-radius: 2px;
+    }
+
+    /* CTA */
+    #cta {
+      background: var(--ink);
+      text-align: center;
+      padding: 120px 48px;
+    }
+
+    #cta .section-label { justify-content: center; color: var(--accent-light); }
+    #cta .section-label::before { background: var(--accent-light); }
+
+    #cta h2 {
+      color: var(--paper);
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    #cta p {
+      font-size: 1rem;
+      color: rgba(250,248,245,0.6);
+      max-width: 460px;
+      margin: 24px auto 48px;
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    #cta .btn-primary {
+      background: var(--accent);
+      font-size: 1rem;
+      padding: 18px 40px;
+    }
+    #cta .btn-primary:hover { background: var(--accent-light); }
+
+    .cta-note {
+      font-size: 0.8rem;
+      color: rgba(250,248,245,0.35);
+      margin-top: 20px;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--ink);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 40px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .footer-logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1rem;
+      color: var(--paper);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 0.82rem;
+      color: rgba(250,248,245,0.4);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--accent-light); }
+
+    .footer-tagline {
+      font-size: 0.8rem;
+      color: rgba(250,248,245,0.25);
+      font-style: italic;
+      font-family: 'DM Serif Display', serif;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 18px 24px; }
+      .nav-links { display: none; }
+      section { padding: 72px 24px; }
+      #hero { padding: 120px 24px 64px; }
+      .hero-stats { gap: 36px; }
+      .process-steps { grid-template-columns: 1fr 1fr; gap: 40px; }
+      .process-steps::before { display: none; }
+      .stats-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 2.4rem; }
+      h2 { font-size: 1.8rem; }
+      .process-steps { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
-  <a href="#hero" class="nav-logo">HARBORLY <span>AI</span></a>
-  <span class="nav-tag">AI Automation for Real Estate</span>
-  <a href="https://calendly.com/harborlyai/30min" target="_blank" class="nav-cta">Book Discovery Call</a>
+  <a href="#hero" class="nav-logo">HARBORLY AI</a>
+  <ul class="nav-links">
+    <li><a href="#solution">What We Build</a></li>
+    <li><a href="#process">How It Works</a></li>
+    <li><a href="#who">Who We Help</a></li>
+    <li><a href="https://instagram.com/harborlyai" target="_blank">Instagram</a></li>
+    <li><a href="https://calendly.com/harborlyai/30min" target="_blank" class="nav-cta">Book Discovery Call</a></li>
+  </ul>
 </nav>
 
 <!-- HERO -->
 <section id="hero">
-  <div class="hero-label">AI Automation Systems for Real Estate</div>
-  <h1 class="hero-headline">
-    Your team should spend<br>
-    zero time on manual work.<br>
-    <span class="teal">We make that happen.</span>
-  </h1>
+  <div class="hero-bg-text">AUTOMATE</div>
+
+  <div class="hero-label">AI Automation for Real Estate</div>
+
+  <h1>Your team should spend <em>zero time</em> on manual work. We make that happen.</h1>
+
   <p class="hero-sub">
-    We build custom AI automation systems for real estate agencies in Dubai and Saudi Arabia — so your agents stop chasing leads manually and start closing deals.
+    We build custom AI automation systems for real estate agencies worldwide — so your agents stop chasing leads manually and start closing deals.
   </p>
-  <div class="hero-buttons">
+
+  <div class="hero-actions">
     <a href="https://calendly.com/harborlyai/30min" target="_blank" class="btn-primary">Book Free Discovery Call →</a>
-    <a href="#solution" class="btn-secondary">See What We Build</a>
+    <a href="#solution" class="btn-ghost">See What We Build</a>
   </div>
-  <div class="hero-stats reveal">
-    <div class="hero-stat">
-      <div class="stat-n">20hrs+</div>
-      <div class="stat-l">Lost weekly to manual workflows in a typical agency</div>
+
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">20hrs+</div>
+      <div class="stat-label">Lost weekly to manual workflows in a typical agency</div>
     </div>
-    <div class="hero-stat">
-      <div class="stat-n">230+</div>
-      <div class="stat-l">PropTech firms already active in UAE — agencies that don't automate will compete against AI-powered giants</div>
+    <div class="stat-item">
+      <div class="stat-num">5×</div>
+      <div class="stat-label">More leads converted by agencies with automated follow-up</div>
     </div>
-    <div class="hero-stat">
-      <div class="stat-n">2033</div>
-      <div class="stat-l">DLD D33 mandate deadline — AI adoption is no longer optional</div>
+    <div class="stat-item">
+      <div class="stat-num">7–14</div>
+      <div class="stat-label">Days to go fully live — from call to automated agency</div>
     </div>
   </div>
 </section>
 
 <!-- PROBLEM -->
 <section id="problem">
-  <div class="problem-inner">
-    <div class="reveal">
-      <span class="section-label">The Problem</span>
-      <h2 class="section-title">Your agency is bleeding hours every single week.</h2>
-      <div class="teal-line"></div>
-      <p class="problem-text">Most real estate agencies in Dubai and Saudi Arabia are running on manual processes that should have been automated years ago. The result: your best agents are doing admin work instead of closing deals.</p>
-      <p class="problem-text">With 230+ PropTech firms already active in the UAE, small real estate agencies that don't adopt AI will find themselves competing against tech-powered giants with automated systems, bigger budgets, and faster response times. The ones that move first survive. The ones that wait get left behind.</p>
+  <div class="section-label">The Problem</div>
+  <h2>Your agency is bleeding hours every single week.</h2>
+  <p class="problem-body">
+    Real estate agencies everywhere are running on manual processes that should have been automated years ago. The result: your best agents are doing admin work instead of closing deals. The agencies that automate first don't just save time — they outcompete everyone who waits.
+  </p>
+
+  <div class="problem-grid">
+    <div class="problem-card">
+      <div class="problem-icon">⏱</div>
+      <h3>Leads going cold</h3>
+      <p>Agencies get 20–30 leads a week and manually follow up with maybe 5. The rest die in the inbox.</p>
     </div>
-    <div class="problem-cards reveal">
-      <div class="problem-card">
-        <span class="problem-icon">⏱</span>
-        <div>
-          <div class="problem-card-title">Leads going cold</div>
-          <div class="problem-card-desc">Agencies get 20-30 leads a week and manually follow up with maybe 5. The rest die in the inbox.</div>
-        </div>
-      </div>
-      <div class="problem-card">
-        <span class="problem-icon">📋</span>
-        <div>
-          <div class="problem-card-title">Manual reporting</div>
-          <div class="problem-card-desc">Hours spent building reports manually every week — work that AI generates automatically in seconds.</div>
-        </div>
-      </div>
-      <div class="problem-card">
-        <span class="problem-icon">💬</span>
-        <div>
-          <div class="problem-card-title">Slow client responses</div>
-          <div class="problem-card-desc">Leads waiting hours for a response. In Dubai's market, that's enough time to lose them to a competitor.</div>
-        </div>
-      </div>
-      <div class="problem-card">
-        <span class="problem-icon">🔄</span>
-        <div>
-          <div class="problem-card-title">Repetitive admin</div>
-          <div class="problem-card-desc">Your team answering the same questions, sending the same updates, doing the same tasks — every day.</div>
-        </div>
-      </div>
+    <div class="problem-card">
+      <div class="problem-icon">📋</div>
+      <h3>Manual reporting</h3>
+      <p>Hours spent building reports every week — work that AI generates automatically in seconds.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon">💬</div>
+      <h3>Slow client responses</h3>
+      <p>Leads waiting hours for a response. In any competitive market, that's enough time to lose them forever.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon">🔄</div>
+      <h3>Repetitive admin</h3>
+      <p>Your team answering the same questions, sending the same updates, doing the same tasks — every day.</p>
     </div>
   </div>
 </section>
 
 <!-- SOLUTION -->
 <section id="solution">
-  <div class="solution-header reveal">
-    <span class="section-label">What We Build</span>
-    <h2 class="section-title">Custom AI systems built for<br>real estate agencies.</h2>
-    <div class="teal-line"></div>
-    <p style="color:var(--dim);font-size:15px;max-width:580px;margin:0 auto;line-height:1.8;">We don't sell generic tools. We build automation systems tailored to your specific workflows — so everything runs in the background while your team focuses on clients.</p>
-  </div>
-  <div class="capabilities-grid reveal">
-    <div class="cap-card">
-      <div class="cap-number">01</div>
-      <div class="cap-title">Lead Capture & Scoring System</div>
-      <div class="cap-desc">Every lead automatically scored as Hot, Warm, or Cold. Hot leads trigger instant agent notifications. Nothing falls through the cracks — ever.</div>
+  <div class="section-label">What We Build</div>
+  <h2>Custom AI systems built for <em>real estate agencies.</em></h2>
+  <p class="solution-intro">We don't sell generic tools. We build automation systems tailored to your specific workflows — so everything runs in the background while your team focuses on clients.</p>
+
+  <div class="solution-grid">
+    <div class="solution-card">
+      <div class="solution-num">01</div>
+      <h3>Lead Capture & Scoring System</h3>
+      <p>Every lead automatically scored as Hot, Warm, or Cold. Hot leads trigger instant agent notifications. Nothing falls through the cracks — ever.</p>
     </div>
-    <div class="cap-card">
-      <div class="cap-number">02</div>
-      <div class="cap-title">Automated Follow-Up Sequences</div>
-      <div class="cap-desc">Multi-stage drip sequences that run automatically. Warm leads nurtured over days. Sequence stops the moment they reply. Agents only step in when leads are ready.</div>
+    <div class="solution-card">
+      <div class="solution-num">02</div>
+      <h3>Automated Follow-Up Sequences</h3>
+      <p>Multi-stage drip sequences that run automatically. Warm leads nurtured over days. Sequence stops the moment they reply. Agents only step in when leads are ready.</p>
     </div>
-    <div class="cap-card">
-      <div class="cap-number">03</div>
-      <div class="cap-title">Instant Lead Response</div>
-      <div class="cap-desc">Every enquiry gets a personalised response within seconds — 24/7. No more leads waiting hours. No more losing clients to faster competitors.</div>
+    <div class="solution-card">
+      <div class="solution-num">03</div>
+      <h3>Instant Lead Response</h3>
+      <p>Every enquiry gets a personalised response within seconds — 24/7. No more leads waiting hours. No more losing clients to faster competitors.</p>
     </div>
-    <div class="cap-card">
-      <div class="cap-number">04</div>
-      <div class="cap-title">Client Communication Automation</div>
-      <div class="cap-desc">Automated updates, reminders, and follow-ups for every stage of the client journey. Clients feel attended to without your team lifting a finger.</div>
+    <div class="solution-card">
+      <div class="solution-num">04</div>
+      <h3>Client Communication Automation</h3>
+      <p>Automated updates, reminders, and follow-ups for every stage of the client journey. Clients feel attended to without your team lifting a finger.</p>
     </div>
-    <div class="cap-card">
-      <div class="cap-number">05</div>
-      <div class="cap-title">Reporting & Analytics Automation</div>
-      <div class="cap-desc">Weekly and monthly reports generated and delivered automatically. Full pipeline visibility. Lead tracking. Everything logged without manual input.</div>
+    <div class="solution-card">
+      <div class="solution-num">05</div>
+      <h3>Reporting & Analytics Automation</h3>
+      <p>Weekly and monthly reports generated and delivered automatically. Full pipeline visibility. Everything logged without manual input.</p>
     </div>
-    <div class="cap-card">
-      <div class="cap-number">06</div>
-      <div class="cap-title">CRM & WhatsApp Integration</div>
-      <div class="cap-desc">Connect your CRM, WhatsApp, email, and property portals into one automated system. All data synced. All communication tracked. Nothing missed.</div>
+    <div class="solution-card">
+      <div class="solution-num">06</div>
+      <h3>CRM & WhatsApp Integration</h3>
+      <p>Connect your CRM, WhatsApp, email, and property portals into one automated system. All data synced. All communication tracked. Nothing missed.</p>
     </div>
   </div>
 </section>
 
 <!-- PROCESS -->
 <section id="process">
-  <div class="process-inner">
-    <div class="process-header reveal">
-      <span class="section-label">How It Works</span>
-      <h2 class="section-title">Four steps to a fully automated agency.</h2>
-      <div class="teal-line" style="margin:0 auto;"></div>
+  <div class="section-label">How It Works</div>
+  <h2>Four steps to a fully <em>automated agency.</em></h2>
+
+  <div class="process-steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Free Discovery Call</h3>
+      <p>30 minutes. We learn about your agency, your team size, and your biggest operational pain points. No pitch — just a genuine conversation.</p>
     </div>
-    <div class="process-steps reveal">
-      <div class="process-step">
-        <div class="step-num">01</div>
-        <div class="step-title">Free Discovery Call</div>
-        <div class="step-desc">30 minutes. We learn about your agency, your team size, and your biggest operational pain points. No pitch — just a genuine conversation.</div>
-        <span class="step-arrow">→</span>
-      </div>
-      <div class="process-step">
-        <div class="step-num">02</div>
-        <div class="step-title">Workflow Mapping</div>
-        <div class="step-desc">We map every workflow in your agency — lead management, client communication, reporting — and identify every automation opportunity.</div>
-        <span class="step-arrow">→</span>
-      </div>
-      <div class="process-step">
-        <div class="step-num">03</div>
-        <div class="step-title">We Build It</div>
-        <div class="step-desc">Our team builds your custom automation system. Typically live within 7-14 days. You see it working before you commit to anything.</div>
-        <span class="step-arrow">→</span>
-      </div>
-      <div class="process-step">
-        <div class="step-num">04</div>
-        <div class="step-title">You Close More Deals</div>
-        <div class="step-desc">Every lead followed up. Every client attended to. Your agents spend zero time on admin and 100% on what they do best — closing.</div>
-      </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>Workflow Mapping</h3>
+      <p>We map every workflow in your agency — lead management, client communication, reporting — and identify every automation opportunity.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>We Build It</h3>
+      <p>Our team builds your custom automation system. Typically live within 7–14 days. You see it working before you commit to anything.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <h3>You Close More Deals</h3>
+      <p>Every lead followed up. Every client attended to. Your agents spend zero time on admin and 100% on what they do best — closing.</p>
     </div>
   </div>
 </section>
 
-<!-- PROOF -->
-<section id="proof">
-  <div class="reveal">
-    <span class="section-label">Why It Matters</span>
-    <h2 class="section-title">The numbers your agency needs to know.</h2>
-    <div class="teal-line"></div>
-  </div>
-  <div class="proof-grid reveal">
-    <div class="proof-card">
-      <div class="proof-stat">230+</div>
-      <div class="proof-label">PropTech firms already active in UAE</div>
-      <div class="proof-desc">Small agencies that don't adopt AI will be competing against tech-powered giants with automated systems, bigger budgets, and faster response times.</div>
-    </div>
-    <div class="proof-card">
-      <div class="proof-stat">2033</div>
-      <div class="proof-label">DLD D33 AI adoption deadline</div>
-      <div class="proof-desc">Dubai's government has mandated AI adoption across real estate agencies. This isn't a trend — it's a government directive. Early movers win.</div>
-    </div>
-    <div class="proof-card">
-      <div class="proof-stat">$50k+</div>
-      <div class="proof-label">Average commission per deal in Dubai</div>
-      <div class="proof-desc">One deal saved from going cold because of slow follow-up pays for your entire automation system many times over.</div>
-    </div>
-  </div>
-</section>
+<!-- STATS -->
+<section id="stats">
+  <div class="section-label">Why It Matters</div>
+  <h2>The numbers your agency <em>needs to know.</em></h2>
 
-<!-- WHY NOW -->
-<section id="why-now">
-  <div class="why-inner">
-    <div class="reveal">
-      <span class="section-label">Why Now</span>
-      <h2 class="section-title">The market is moving.<br>Are you?</h2>
-      <div class="teal-line"></div>
-      <p style="color:var(--dim);font-size:15px;line-height:1.8;margin-bottom:16px;">Saudi Arabia's Vision 2030 and Dubai's DLD D33 strategy are pushing real estate agencies toward full digital transformation. The agencies building their AI foundation now will dominate the next decade.</p>
-      <p style="color:var(--dim);font-size:15px;line-height:1.8;">This isn't a trend. It's a government mandate. And the agencies that move first don't just comply — they outperform every competitor who waits.</p>
+  <div class="stats-grid">
+    <div class="stats-card">
+      <div class="stat-num">80%</div>
+      <div class="stat-title">Of leads never get a timely follow-up</div>
+      <p>Most agencies lose deals not because of bad agents, but because manual processes create gaps. Automation closes them permanently.</p>
     </div>
-    <div class="mandate-box reveal">
-      <div class="mandate-title">Government Mandates</div>
-      <div class="mandate-headline">Two governments are pushing your industry toward AI right now.</div>
-      <div class="mandate-text">Both DLD D33 (UAE) and Vision 2030 (Saudi Arabia) mandate AI adoption across the real estate sector. This is not optional — it's coming.</div>
-      <div class="mandate-points">
-        <div class="mandate-point">DLD D33 mandates AI adoption by 2033 across all UAE real estate agencies</div>
-        <div class="mandate-point">Saudi Vision 2030 pushes full digital transformation of the Kingdom's real estate sector</div>
-        <div class="mandate-point">Early adopters gain competitive advantage before the mandate becomes unavoidable</div>
-        <div class="mandate-point">Agencies that automate first capture market share from those who wait</div>
-      </div>
+    <div class="stats-card">
+      <div class="stat-num">5×</div>
+      <div class="stat-title">Higher conversion with automated lead response</div>
+      <p>Responding to a lead within 5 minutes makes you 5× more likely to close them. Automation makes that the default — not the exception.</p>
+    </div>
+    <div class="stats-card">
+      <div class="stat-num">$50k+</div>
+      <div class="stat-title">Average commission per deal in top markets</div>
+      <p>One deal saved from going cold because of slow follow-up pays for your entire automation system many times over.</p>
     </div>
   </div>
 </section>
 
 <!-- WHO -->
 <section id="who">
-  <div class="reveal">
-    <span class="section-label">Who We Work With</span>
-    <h2 class="section-title">Built for agencies ready to move first.</h2>
-    <div class="teal-line"></div>
-  </div>
-  <div class="who-grid reveal">
+  <div class="section-label">Who We Work With</div>
+  <h2>Built for agencies <em>ready to move first.</em></h2>
+
+  <div class="who-grid">
     <div class="who-card">
-      <span class="who-icon">🏢</span>
-      <div class="who-title">Dubai Real Estate Agencies</div>
-      <div class="who-desc">Boutique and mid-size agencies operating in Dubai's competitive market. You have the listings and the team — we make sure no lead ever goes cold and no client ever feels ignored.</div>
-      <div class="who-tags">
-        <span class="who-tag">Lead Management</span>
-        <span class="who-tag">Follow-Up Automation</span>
-        <span class="who-tag">Client Communication</span>
-        <span class="who-tag">D33 Compliance</span>
+      <div class="who-icon">🏢</div>
+      <h3>Boutique & Independent Agencies</h3>
+      <p>You have the listings, the relationships, and the market knowledge. You just need the operational backbone that big brokerages have. We build it for you.</p>
+      <div class="tags">
+        <span class="tag">Lead Management</span>
+        <span class="tag">Follow-Up Automation</span>
+        <span class="tag">CRM Integration</span>
       </div>
     </div>
     <div class="who-card">
-      <span class="who-icon">🕌</span>
-      <div class="who-title">Saudi Arabia Real Estate Agencies</div>
-      <div class="who-desc">Agencies across Riyadh, Jeddah, and the Kingdom. Vision 2030 is creating the biggest real estate transformation in Saudi history — we make sure your agency is operationally ready for it.</div>
-      <div class="who-tags">
-        <span class="who-tag">Vision 2030 Ready</span>
-        <span class="who-tag">Lead Scoring</span>
-        <span class="who-tag">WhatsApp Automation</span>
-        <span class="who-tag">CRM Integration</span>
+      <div class="who-icon">📈</div>
+      <h3>Scaling Agencies</h3>
+      <p>Growing fast but drowning in admin? Automation lets you double your deal volume without doubling your headcount. Scale the operation, not the overhead.</p>
+      <div class="tags">
+        <span class="tag">Pipeline Automation</span>
+        <span class="tag">Team Workflows</span>
+        <span class="tag">Reporting</span>
+      </div>
+    </div>
+    <div class="who-card">
+      <div class="who-icon">🌍</div>
+      <h3>International & Luxury Markets</h3>
+      <p>High-value clients expect fast, personalised responses. Automated systems make 24/7 responsiveness the standard — regardless of timezone or team size.</p>
+      <div class="tags">
+        <span class="tag">Client Communication</span>
+        <span class="tag">WhatsApp Automation</span>
+        <span class="tag">Multi-Market</span>
       </div>
     </div>
   </div>
@@ -393,39 +826,24 @@
 
 <!-- CTA -->
 <section id="cta">
-  <div class="cta-inner reveal">
-    <span class="section-label" style="display:block;text-align:center;margin-bottom:20px;">Ready to Automate?</span>
-    <h2 class="cta-headline">Stop losing leads.<br><span>Start closing deals.</span></h2>
-    <p class="cta-sub">Book a free 30-minute discovery call. We'll map your agency's workflows, identify your biggest automation opportunities, and show you exactly what we can build — no obligation.</p>
-    <a href="https://calendly.com/harborlyai/30min" target="_blank" class="btn-primary" style="font-size:13px;padding:18px 40px;">Book Free Discovery Call →</a>
-    <p style="margin-top:24px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.15em;color:var(--dim2);">No pitch. No obligation. Just a genuine conversation about your agency's operations.</p>
-  </div>
+  <div class="section-label">Ready to Automate?</div>
+  <h2>Stop losing leads.<br><em>Start closing deals.</em></h2>
+  <p>Book a free 30-minute discovery call. We'll map your agency's workflows, identify your biggest automation opportunities, and show you exactly what we can build — no obligation.</p>
+  <a href="https://calendly.com/harborlyai/30min" target="_blank" class="btn-primary">Book Free Discovery Call →</a>
+  <div class="cta-note">No pitch. No obligation. Just a genuine conversation about your agency's operations.</div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">HARBORLY <span>AI</span></div>
+  <a href="#hero" class="footer-logo">HARBORLY AI</a>
   <ul class="footer-links">
     <li><a href="#solution">What We Build</a></li>
     <li><a href="#process">How It Works</a></li>
     <li><a href="#who">Who We Help</a></li>
     <li><a href="https://instagram.com/harborlyai" target="_blank">Instagram</a></li>
   </ul>
-  <span class="footer-tag">Find the gap. Close it.</span>
+  <div class="footer-tagline">Find the gap. Close it.</div>
 </footer>
-
-<script>
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add('visible'), i * 80);
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
-  reveals.forEach(el => observer.observe(el));
-</script>
 
 </body>
 </html>
